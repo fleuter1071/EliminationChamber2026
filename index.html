@@ -13,11 +13,13 @@
             --wwe-card-bg: rgba(30, 30, 30, 0.7);
             --wwe-light: #eaeaea;
             --neon-glow: 0 0 15px rgba(211, 47, 47, 0.6);
+            --wwe-gold: #ffc107;
         }
 
-        /* Smooth scrolling for navigation links */
+        /* IMPROVEMENT 2: Scroll Padding prevents sticky nav from hiding headings */
         html {
             scroll-behavior: smooth;
+            scroll-padding-top: 80px; 
         }
 
         body {
@@ -47,7 +49,6 @@
             text-shadow: 3px 3px 0px var(--wwe-red);
         }
 
-        /* Upgraded Sticky Navigation cool */
         nav {
             display: flex;
             justify-content: center;
@@ -71,11 +72,6 @@
             transition: all 0.3s ease;
         }
 
-        nav a:hover, nav a:active {
-            color: var(--wwe-red-bright);
-            transform: scale(1.05);
-        }
-
         .container {
             max-width: 1100px;
             margin: 0 auto;
@@ -83,8 +79,7 @@
         }
 
         section {
-            margin: 80px 0;
-            padding-top: 20px;
+            margin: 40px 0 80px 0;
         }
 
         h2 {
@@ -97,7 +92,6 @@
             display: inline-block;
         }
 
-        /* Polished Countdown Section */
         #countdown-container {
             text-align: center;
             padding: 30px 20px;
@@ -142,172 +136,8 @@
             font-weight: 400;
             text-transform: uppercase;
             margin-top: 5px;
-            letter-spacing: 1px;
-        }
-
-        /* Upgraded Card Grids */
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 25px;
-        }
-
-        .card {
-            background: var(--wwe-card-bg);
-            padding: 25px;
-            border-radius: 10px;
-            border: 1px solid #333;
-            backdrop-filter: blur(5px);
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-        }
-
-        .card:hover {
-            transform: translateY(-8px);
-            border-color: var(--wwe-red-bright);
-            box-shadow: var(--neon-glow);
-        }
-
-        .card h3 {
-            color: var(--wwe-red-bright);
-            font-size: 1.5rem;
-            margin-top: 0;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .card p, .card ul {
-            font-family: 'Arial', sans-serif; /* Keep body text readable */
-            line-height: 1.7;
-            color: #ccc;
-            font-size: 1.05rem;
-        }
-
-        .match-card {
-            background: linear-gradient(to bottom, rgba(40,40,40,0.9), rgba(10,10,10,0.9)), url('https://images.unsplash.com/photo-1541534741688-6078c6bfb5c5?auto=format&fit=crop&w=800&q=80') center/cover;
-            border-top: 4px solid var(--wwe-red);
-        }
-
-        .match-card p {
-            color: #eaeaea;
-        }
-
-        .match-card strong {
-            color: #fff;
-        }
-
-        footer {
-            text-align: center;
-            padding: 40px 20px;
-            background-color: #050505;
-            margin-top: 80px;
-            border-top: 1px solid #333;
-            color: #777;
-            font-family: 'Arial', sans-serif;
-        }
-
-        /* --- MOBILE OPTIMIZATIONS --- */
-        @media (max-width: 600px) {
-            header h1 {
-                font-size: 2.2rem;
-            }
-            
-            /* Make navigation stack vertically on mobile for easy tapping */
-            nav {
-                flex-direction: column;
-                align-items: center;
-                gap: 15px;
-                padding: 15px 0;
-            }
-
-            nav a {
-                margin: 0;
-                font-size: 1.2rem;
-            }
-
-            /* Adjust timer for smaller screens */
-            .timer {
-                gap: 10px;
-                font-size: 2rem;
-            }
-
-            .timer div {
-                padding: 10px;
-            }
-
-            h2 {
-                font-size: 2.2rem;
-            }
-        }
-    </style>
-</head>
-<body>
-
-    <header>
-        <h1>Elimination Chamber</h1>
-    </header>
-
-    <nav>
-        <a href="#upcoming">2026 Event</a>
-        <a href="#structure">The Structure</a>
-        <a href="#history">Origins & History</a>
-    </nav>
-
-    <div class="container">
-        <section id="upcoming">
-            <h2>Saturday, Feb 28, 2026 • Chicago, IL</h2>
-            
-            <div id="countdown-container">
-                <h3>Time Until The Chamber Opens</h3>
-                <div class="timer" id="countdown">
-                    <div><span id="days">00</span><span class="label">Days</span></div>
-                    <div><span id="hours">00</span><span class="label">Hours</span></div>
-                    <div><span id="minutes">00</span><span class="label">Mins</span></div>
-                    <div><span id="seconds">00</span><span class="label">Secs</span></div>
-                </div>
-            </div>
-
-            <div class="card" style="margin-bottom: 30px;">
-                <p>For the first time in 32 years (since SummerSlam 1994), WWE brings a Premium Live Event back to the legendary United Center in Chicago. With the Royal Rumble in the rearview mirror, the road to WrestleMania 42 goes straight through the steel.</p>
-            </div>
-
-            <h3 style="color:#fff; font-size: 2rem; text-transform: uppercase; margin-bottom: 15px;">Official Match Card</h3>
-            <div class="grid">
-                <div class="card match-card">
-                    <h3>Men's Elimination Chamber</h3>
-                    <p>Winner gets an Undisputed WWE Title Match at WrestleMania 42.</p>
-                    <p><strong>Participants:</strong> Randy Orton vs. LA Knight vs. Cody Rhodes vs. Je'Von Evans vs. Trick Williams vs. Jey Uso</p>
-                </div>
-                <div class="card match-card">
-                    <h3>Women's Elimination Chamber</h3>
-                    <p>Winner gets a Women's World Title Match at WrestleMania 42.</p>
-                    <p><strong>Participants:</strong> Rhea Ripley vs. Tiffany Stratton vs. Kiana James vs. Alexa Bliss vs. Asuka vs. Raquel Rodriguez</p>
-                </div>
-                <div class="card match-card">
-                    <h3>World Heavyweight Championship</h3>
-                    <p>CM Punk (c) vs. Finn Bálor</p>
-                    <p><em>Chicago's own CM Punk defends his title on home turf.</em></p>
-                </div>
-                <div class="card match-card">
-                    <h3>Women's IC Championship</h3>
-                    <p>Becky Lynch (c) vs. AJ Lee</p>
-                </div>
-            </div>
-        </section>
-
-        <section id="structure">
-            <h2>The Unforgiving Structure</h2>
-            <div class="card" style="margin-bottom: 25px;">
-                <p>The Elimination Chamber is a massive, circular steel cage that encloses the entire ring and ringside area. It is designed to punish and intimidate.</p>
-            </div>
-            
-            <div class="grid">
-                <div class="card">
-                    <h3>The Specs</h3>
-                    <ul>
-                        <li><strong>Weight:</strong> 10 Tons of solid steel</li>
-                        <li><strong>Chain:</strong> 2 Miles of chain-link fencing</li>
-                        <li><strong>Diameter:</strong> 36 feet across</li>
+            letter-spacing: 1px
+ong>Diameter:</strong> 36 feet across</li>
                         <li><strong>Pods:</strong> 4 inner enclosures made of reinforced plexiglass</li>
                     </ul>
                 </div>
