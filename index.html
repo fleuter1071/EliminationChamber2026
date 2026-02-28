@@ -13,6 +13,8 @@
             --wwe-card-bg: rgba(30, 30, 30, 0.75);
             --wwe-light: #eaeaea;
             --neon-glow: 0 0 15px rgba(255, 51, 51, 0.8);
+            --wwe-gold: #ffc107;
+            --gold-glow: 0 0 25px rgba(255, 193, 7, 0.6);
         }
 
         html {
@@ -44,6 +46,16 @@
             30% { transform: scale(1); }
             45% { transform: scale(1.02); }
             100% { transform: scale(1); }
+        }
+
+        @keyframes goldPulse {
+            0% { box-shadow: 0 0 5px rgba(255,193,7,0.2); border-color: rgba(255,193,7,0.5); }
+            100% { box-shadow: 0 0 25px rgba(255,193,7,0.9); border-color: rgba(255,193,7,1); }
+        }
+
+        @keyframes stompReveal {
+            0% { opacity: 0; transform: scale(1.5); }
+            100% { opacity: 1; transform: scale(1); }
         }
 
         header {
@@ -280,6 +292,61 @@
             text-shadow: 1px 1px 2px #000;
         }
 
+        /* --- PREDICTED WINNER UI --- */
+        .winner-box {
+            background: rgba(255, 193, 7, 0.1);
+            border: 3px solid var(--wwe-gold);
+            text-align: center;
+            padding: 30px 20px;
+            margin-top: 20px;
+            border-radius: 8px;
+            display: none; /* Initially hidden */
+        }
+
+        .winner-box.calculating {
+            display: block;
+            border-style: dashed;
+            animation: goldPulse 0.8s infinite alternate;
+        }
+
+        .winner-box.revealed {
+            display: block;
+            box-shadow: var(--gold-glow);
+            animation: stompReveal 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        .winner-header-text {
+            font-size: 1.5rem;
+            color: var(--wwe-gold);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px #000;
+        }
+
+        .winner-name-text {
+            font-size: 3.5rem;
+            color: #fff;
+            font-weight: bold;
+            text-transform: uppercase;
+            text-shadow: 0 0 15px var(--wwe-gold);
+            margin: 10px 0 15px 0;
+            line-height: 1.1;
+        }
+
+        .winner-subtext {
+            font-size: 1.3rem;
+            color: #eaeaea;
+            font-family: Arial, sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            background: rgba(0,0,0,0.5);
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 4px;
+        }
+
         /* Grid & Cards */
         .grid {
             display: grid;
@@ -343,6 +410,7 @@
             h2 { font-size: 2.4rem; }
             .interactive-section h3 { font-size: 2rem; }
             .wrestler-name { font-size: 1.4rem; }
+            .winner-name-text { font-size: 2.5rem; }
         }
     </style>
 </head>
@@ -403,9 +471,9 @@
 
         <section id="interactive" class="interactive-section">
             <h3>Predict The Carnage: Men's Chamber</h3>
-            <p>Two start the match. Four wait in the pods. Generate your official prediction for the entry order.</p>
+            <p>Two start the match. Four wait in the pods. Generate your official prediction for the entry order and the ultimate winner.</p>
             
-            <button id="predictBtn" onclick="generatePrediction()">Generate Entrance Order</button>
+            <button id="predictBtn" onclick="generatePrediction()">Generate Prediction</button>
             
             <div id="prediction-results">
                 </div>
@@ -507,20 +575,23 @@
             const resultsContainer = document.getElementById("prediction-results");
 
             // 1. Lock the UI
-            btn.innerText = "RANDOMIZING...";
+            btn.innerText = "SIMULATING MATCH...";
             btn.disabled = true;
             resultsContainer.style.display = "flex";
-            resultsContainer.innerHTML = ""; // Clear previous results
+            resultsContainer.innerHTML = "";
 
-            // 2. Shuffle the participants array using Fisher-Yates algorithm for true randomness
+            // 2. Shuffle the participants array
             let shuffled = [...participants];
             for (let i = shuffled.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
                 [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
             }
 
-            // 3. Build the HTML structure for the results
-            // The Starters (Indexes 0 and 1)
+            // 3. Randomly select the ultimate winner
+            const winnerIndex = Math.floor(Math.random() * 6);
+            const predictedWinner = shuffled[winnerIndex];
+
+            // 4. Build the HTML structure
             let htmlContent = `
                 <div class="result-box starters-box" id="reveal-0">
                     <div class="result-header">The Starters</div>
@@ -529,7 +600,6 @@
                 </div>
             `;
 
-            // The Pods (Indexes 2 through 5)
             for(let i = 2; i < 6; i++) {
                 htmlContent += `
                     <div class="result-box pod-box" id="reveal-${i-1}">
@@ -539,11 +609,17 @@
                 `;
             }
 
-            // Inject the HTML
+            // Add the container for the winner (hidden at first)
+            htmlContent += `
+                <div id="winner-container" class="winner-box">
+                    <div class="winner-header-text">CALCULATING WINNER...</div>
+                </div>
+            `;
+
             resultsContainer.innerHTML = htmlContent;
 
-            // 4. Execute the Cascading Reveal Animation
-            let delay = 500; // Start delay
+            // 5. Execute Cascading Reveal
+            let delay = 500;
 
             // Reveal Starters
             setTimeout(() => {
@@ -552,18 +628,25 @@
 
             // Reveal Pods sequentially
             for(let i = 1; i <= 4; i++) {
-                delay += 700; // Add 0.7 seconds between each reveal
+                delay += 700;
                 setTimeout(() => {
                     document.getElementById(`reveal-${i}`).classList.add('visible');
                 }, delay);
             }
 
-            // 5. Re-enable the button after the final animation finishes
+            // Reveal "Calculating" State for Winner
+            delay += 800;
             setTimeout(() => {
-                btn.innerText = "RE-ROLL PREDICTION";
-                btn.disabled = false;
-            }, delay + 500);
-        }
-    </script>
-</body>
-</html>
+                const winnerBox = document.getElementById('winner-container');
+                winnerBox.classList.add('calculating');
+                // Scroll down slightly so the winner box is fully in view on mobile
+                winnerBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, delay);
+
+            // Execute Final Winner Reveal Drop
+            delay += 2000; // 2 seconds of suspense
+            setTimeout(() => {
+                const winnerBox = document.getElementById('winner-container');
+                
+                // Swap classes to trigger the stomp animation
+                winnerBox.classList.
