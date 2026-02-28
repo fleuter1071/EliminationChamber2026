@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WWE Elimination Chamber Fandom</title>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --wwe-red: #d32f2f;
+            --wwe-red-bright: #ff4c4c;
+            --wwe-dark: #0a0a0a;
+            --wwe-card-bg: rgba(30, 30, 30, 0.7);
+            --wwe-light: #eaeaea;
+            --neon-glow: 0 0 15px rgba(211, 47, 47, 0.6);
+        }
+
+        /* Smooth scrolling for navigation links */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Oswald', sans-serif;
+            background-color: var(--wwe-dark);
+            background-image: radial-gradient(circle at 50% 0%, #2a0808 0%, var(--wwe-dark) 60%);
+            color: var(--wwe-light);
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        header {
+            background: linear-gradient(180deg, rgba(0,0,0,0.9) 0%, rgba(20,0,0,0.8) 100%);
+            padding: 3rem 1rem;
+            text-align: center;
+            border-bottom: 2px solid var(--wwe-red);
+            box-shadow: var(--neon-glow);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 3.5rem;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            color: #fff;
+            text-shadow: 3px 3px 0px var(--wwe-red);
+        }
+
+        /* Upgraded Sticky Navigation */
+        nav {
+            display: flex;
+            justify-content: center;
+            background-color: rgba(0, 0, 0, 0.95);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid #333;
+        }
+
+        nav a {
+            color: #ccc;
+            text-decoration: none;
+            margin: 0 20px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+        }
+
+        nav a:hover, nav a:active {
+            color: var(--wwe-red-bright);
+            transform: scale(1.05);
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        section {
+            margin: 80px 0;
+            padding-top: 20px;
+        }
+
+        h2 {
+            font-size: 2.8rem;
+            color: #fff;
+            text-transform: uppercase;
+            border-bottom: 3px solid var(--wwe-red);
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+            display: inline-block;
+        }
+
+        /* Polished Countdown Section */
+        #countdown-container {
+            text-align: center;
+            padding: 30px 20px;
+            background: var(--wwe-card-bg);
+            border-radius: 12px;
+            border: 1px solid #333;
+            margin-bottom: 40px;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+        }
+
+        #countdown-container h3 {
+            color: var(--wwe-red-bright);
+            font-size: 1.5rem;
+            margin-top: 0;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .timer {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            font-size: 3rem;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .timer div {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: rgba(0,0,0,0.5);
+            padding: 15px 20px;
+            border-radius: 8px;
+            border-top: 2px solid var(--wwe-red);
+        }
+
+        .timer span.label {
+            font-size: 1rem;
+            color: #aaa;
+            font-weight: 400;
+            text-transform: uppercase;
+            margin-top: 5px;
+            letter-spacing: 1px;
+        }
+
+        /* Upgraded Card Grids */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .card {
+            background: var(--wwe-card-bg);
+            padding: 25px;
+            border-radius: 10px;
+            border: 1px solid #333;
+            backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            border-color: var(--wwe-red-bright);
+            box-shadow: var(--neon-glow);
+        }
+
+        .card h3 {
+            color: var(--wwe-red-bright);
+            font-size: 1.5rem;
+            margin-top: 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .card p, .card ul {
+            font-family: 'Arial', sans-serif; /* Keep body text readable */
+            line-height: 1.7;
+            color: #ccc;
+            font-size: 1.05rem;
+        }
+
+        .match-card {
+            background: linear-gradient(to bottom, rgba(40,40,40,0.9), rgba(10,10,10,0.9)), url('https://images.unsplash.com/photo-1541534741688-6078c6bfb5c5?auto=format&fit=crop&w=800&q=80') center/cover;
+            border-top: 4px solid var(--wwe-red);
+        }
+
+        .match-card p {
+            color: #eaeaea;
+        }
+
+        .match-card strong {
+            color: #fff;
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            background-color: #050505;
+            margin-top: 80px;
+            border-top: 1px solid #333;
+            color: #777;
+            font-family: 'Arial', sans-serif;
+        }
+
+        /* --- MOBILE OPTIMIZATIONS --- */
+        @media (max-width: 600px) {
+            header h1 {
+                font-size: 2.2rem;
+            }
+            
+            /* Make navigation stack vertically on mobile for easy tapping */
+            nav {
+                flex-direction: column;
+                align-items: center;
+                gap: 15px;
+                padding: 15px 0;
+            }
+
+            nav a {
+                margin: 0;
+                font-size: 1.2rem;
+            }
+
+            /* Adjust timer for smaller screens */
+            .timer {
+                gap: 10px;
+                font-size: 2rem;
+            }
+
+            .timer div {
+                padding: 10px;
+            }
+
+            h2 {
+                font-size: 2.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Elimination Chamber</h1>
+    </header>
+
+    <nav>
+        <a href="#upcoming">2026 Event</a>
+        <a href="#structure">The Structure</a>
+        <a href="#history">Origins & History</a>
+    </nav>
+
+    <div class="container">
+        <section id="upcoming">
+            <h2>Saturday, Feb 28, 2026 • Chicago, IL</h2>
+            
+            <div id="countdown-container">
+                <h3>Time Until The Chamber Opens</h3>
+                <div class="timer" id="countdown">
+                    <div><span id="days">00</span><span class="label">Days</span></div>
+                    <div><span id="hours">00</span><span class="label">Hours</span></div>
+                    <div><span id="minutes">00</span><span class="label">Mins</span></div>
+                    <div><span id="seconds">00</span><span class="label">Secs</span></div>
+                </div>
+            </div>
+
+            <div class="card" style="margin-bottom: 30px;">
+                <p>For the first time in 32 years (since SummerSlam 1994), WWE brings a Premium Live Event back to the legendary United Center in Chicago. With the Royal Rumble in the rearview mirror, the road to WrestleMania 42 goes straight through the steel.</p>
+            </div>
+
+            <h3 style="color:#fff; font-size: 2rem; text-transform: uppercase; margin-bottom: 15px;">Official Match Card</h3>
+            <div class="grid">
+                <div class="card match-card">
+                    <h3>Men's Elimination Chamber</h3>
+                    <p>Winner gets an Undisputed WWE Title Match at WrestleMania 42.</p>
+                    <p><strong>Participants:</strong> Randy Orton vs. LA Knight vs. Cody Rhodes vs. Je'Von Evans vs. Trick Williams vs. Jey Uso</p>
+                </div>
+                <div class="card match-card">
+                    <h3>Women's Elimination Chamber</h3>
+                    <p>Winner gets a Women's World Title Match at WrestleMania 42.</p>
+                    <p><strong>Participants:</strong> Rhea Ripley vs. Tiffany Stratton vs. Kiana James vs. Alexa Bliss vs. Asuka vs. Raquel Rodriguez</p>
+                </div>
+                <div class="card match-card">
+                    <h3>World Heavyweight Championship</h3>
+                    <p>CM Punk (c) vs. Finn Bálor</p>
+                    <p><em>Chicago's own CM Punk defends his title on home turf.</em></p>
+                </div>
+                <div class="card match-card">
+                    <h3>Women's IC Championship</h3>
+                    <p>Becky Lynch (c) vs. AJ Lee</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="structure">
+            <h2>The Unforgiving Structure</h2>
+            <div class="card" style="margin-bottom: 25px;">
+                <p>The Elimination Chamber is a massive, circular steel cage that encloses the entire ring and ringside area. It is designed to punish and intimidate.</p>
+            </div>
+            
+            <div class="grid">
+                <div class="card">
+                    <h3>The Specs</h3>
+                    <ul>
+                        <li><strong>Weight:</strong> 10 Tons of solid steel</li>
+                        <li><strong>Chain:</strong> 2 Miles of chain-link fencing</li>
+                        <li><strong>Diameter:</strong> 36 feet across</li>
+                        <li><strong>Pods:</strong> 4 inner enclosures made of reinforced plexiglass</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3>The Rules</h3>
+                    <ul>
+                        <li>Two superstars start the match in the ring.</li>
+                        <li>The remaining four are locked inside the corner pods.</li>
+                        <li>At regular timed intervals, a pod opens at random, releasing another wrestler.</li>
+                        <li>Eliminations occur only via pinfall or submission inside the ring.</li>
+                        <li>The last person standing is the winner.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="history">
+            <h2>Origins & Brutal History</h2>
+            <div class="card" style="margin-bottom: 25px;">
+                <p>Before 2002, WWE fans only knew the traditional Steel Cage and Hell in a Cell. The Elimination Chamber changed the landscape of sports entertainment forever.</p>
+            </div>
+            
+            <div class="grid">
+                <div class="card">
+                    <h3>How It Came About</h3>
+                    <p>Introduced on-screen by Eric Bischoff in November 2002, the concept was the brainchild of Triple H. The goal was to combine the countdown timer of the Royal Rumble, the survival aspect of Survivor Series, and the enclosed cage brutality of WarGames.</p>
+                </div>
+                <div class="card">
+                    <h3>The Inaugural Match</h3>
+                    <p>The very first match took place at Survivor Series 2002 at Madison Square Garden. Shawn Michaels famously survived the brutal debut, overcoming Triple H, Chris Jericho, Kane, Booker T, and Rob Van Dam to win the World Heavyweight Championship.</p>
+                </div>
+                <div class="card">
+                    <h3>Evolution of the Chamber</h3>
+                    <p>Originally, the floor outside the ring was made of solid steel grating—a "death trap." In 2017, WWE updated the structure to a slightly more square-ish design with padded floors outside the ropes to better fit modern arenas and improve safety.</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <p>Built for the WWE Universe. Enjoy the road to WrestleMania!</p>
+    </footer>
+
+    <script>
+        // Countdown Timer Logic
+        // Set to Feb 28, 2026 at 5:30 PM CST (6:30 PM EST)
+        const targetDate = new Date("February 28, 2026 17:30:00").getTime();
+
+        const updateCountdown = setInterval(function() {
+            const now = new Date().getTime();
+            const distance = targetDate - now;
+
+            if (distance < 0) {
+                clearInterval(updateCountdown);
+                document.getElementById("countdown").innerHTML = "<div style='width:100%; text-align:center; color:#ff4c4c; font-size:2.5rem;'>THE CHAMBER IS OPEN!</div>";
+                return;
+            }
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            document.getElementById("days").innerText = days < 10 ? "0" + days : days;
+            document.getElementById("hours").innerText = hours < 10 ? "0" + hours : hours;
+            document.getElementById("minutes").innerText = minutes < 10 ? "0" + minutes : minutes;
+            document.getElementById("seconds").innerText = seconds < 10 ? "0" + seconds : seconds;
+        }, 1000);
+    </script>
+</body>
+</html>
