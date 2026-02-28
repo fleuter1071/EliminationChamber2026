@@ -300,7 +300,7 @@
             padding: 30px 20px;
             margin-top: 20px;
             border-radius: 8px;
-            display: none; /* Initially hidden */
+            display: none; 
         }
 
         .winner-box.calculating {
@@ -413,6 +413,147 @@
             .winner-name-text { font-size: 2.5rem; }
         }
     </style>
+
+    <script>
+        // Wait for HTML to load before running timer
+        document.addEventListener("DOMContentLoaded", function() {
+            // --- COUNTDOWN TIMER LOGIC ---
+            const targetDate = new Date("2026-02-28T17:30:00-06:00").getTime();
+
+            const updateCountdown = setInterval(function() {
+                const now = new Date().getTime();
+                const distance = targetDate - now;
+
+                if (distance < 0) {
+                    clearInterval(updateCountdown);
+                    const countdownEl = document.getElementById("countdown");
+                    if (countdownEl) {
+                        countdownEl.innerHTML = "<div style='width:100%; text-align:center; color:#ff3333; font-size:2.5rem; text-shadow: 2px 2px 10px #ff0000;'>THE CHAMBER IS OPEN!</div>";
+                    }
+                    return;
+                }
+
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                const daysEl = document.getElementById("days");
+                if (daysEl) {
+                    daysEl.innerText = days < 10 ? "0" + days : days;
+                    document.getElementById("hours").innerText = hours < 10 ? "0" + hours : hours;
+                    document.getElementById("minutes").innerText = minutes < 10 ? "0" + minutes : minutes;
+                    document.getElementById("seconds").innerText = seconds < 10 ? "0" + seconds : seconds;
+                }
+            }, 1000);
+        });
+
+        // --- PREDICTOR LOGIC ---
+        // This is kept globally available so the HTML button can trigger it
+        const participants = [
+            "Randy Orton", 
+            "LA Knight", 
+            "Cody Rhodes", 
+            "Je'Von Evans", 
+            "Trick Williams", 
+            "Logan Paul"
+        ];
+
+        function generatePrediction() {
+            const btn = document.getElementById("predictBtn");
+            const resultsContainer = document.getElementById("prediction-results");
+
+            // 1. Lock the UI
+            btn.innerText = "SIMULATING MATCH...";
+            btn.disabled = true;
+            resultsContainer.style.display = "flex";
+            resultsContainer.innerHTML = "";
+
+            // 2. Shuffle the participants array
+            let shuffled = [...participants];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+
+            // 3. Randomly select the ultimate winner
+            const winnerIndex = Math.floor(Math.random() * 6);
+            const predictedWinner = shuffled[winnerIndex];
+
+            // 4. Build the HTML structure
+            let htmlContent = `
+                <div class="result-box starters-box" id="reveal-0">
+                    <div class="result-header">The Starters</div>
+                    <div class="wrestler-name">1. ${shuffled[0]}</div>
+                    <div class="wrestler-name">2. ${shuffled[1]}</div>
+                </div>
+            `;
+
+            for(let i = 2; i < 6; i++) {
+                htmlContent += `
+                    <div class="result-box pod-box" id="reveal-${i-1}">
+                        <div class="result-header">Entry #${i+1} (Pod ${i-1})</div>
+                        <div class="wrestler-name">${shuffled[i]}</div>
+                    </div>
+                `;
+            }
+
+            // Add the container for the winner (hidden at first)
+            htmlContent += `
+                <div id="winner-container" class="winner-box">
+                    <div class="winner-header-text">CALCULATING WINNER...</div>
+                </div>
+            `;
+
+            resultsContainer.innerHTML = htmlContent;
+
+            // 5. Execute Cascading Reveal
+            let delay = 500;
+
+            // Reveal Starters
+            setTimeout(() => {
+                document.getElementById('reveal-0').classList.add('visible');
+            }, delay);
+
+            // Reveal Pods sequentially
+            for(let i = 1; i <= 4; i++) {
+                delay += 700;
+                setTimeout(() => {
+                    document.getElementById(`reveal-${i}`).classList.add('visible');
+                }, delay);
+            }
+
+            // Reveal "Calculating" State for Winner
+            delay += 800;
+            setTimeout(() => {
+                const winnerBox = document.getElementById('winner-container');
+                winnerBox.classList.add('calculating');
+                // Scroll down slightly so the winner box is fully in view on mobile
+                winnerBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, delay);
+
+            // Execute Final Winner Reveal Drop
+            delay += 2000; // 2 seconds of suspense
+            setTimeout(() => {
+                const winnerBox = document.getElementById('winner-container');
+                
+                // Swap classes to trigger the stomp animation
+                winnerBox.classList.remove('calculating');
+                winnerBox.classList.add('revealed');
+                
+                // Inject the final gold-themed winner HTML
+                winnerBox.innerHTML = `
+                    <div class="winner-header-text">PREDICTED WINNER</div>
+                    <div class="winner-name-text">${predictedWinner}</div>
+                    <div class="winner-subtext">Going to WrestleMania 42!</div>
+                `;
+
+                // Re-enable the button
+                btn.innerText = "RE-ROLL PREDICTION";
+                btn.disabled = false;
+            }, delay);
+        }
+    </script>
 </head>
 <body>
 
@@ -534,119 +675,5 @@
     <footer>
         <p>Built for the WWE Universe. Enjoy the road to WrestleMania!</p>
     </footer>
-
-    <script>
-        // --- COUNTDOWN TIMER LOGIC ---
-        const targetDate = new Date("2026-02-28T17:30:00-06:00").getTime();
-
-        const updateCountdown = setInterval(function() {
-            const now = new Date().getTime();
-            const distance = targetDate - now;
-
-            if (distance < 0) {
-                clearInterval(updateCountdown);
-                document.getElementById("countdown").innerHTML = "<div style='width:100%; text-align:center; color:#ff3333; font-size:2.5rem; text-shadow: 2px 2px 10px #ff0000;'>THE CHAMBER IS OPEN!</div>";
-                return;
-            }
-
-            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-            document.getElementById("days").innerText = days < 10 ? "0" + days : days;
-            document.getElementById("hours").innerText = hours < 10 ? "0" + hours : hours;
-            document.getElementById("minutes").innerText = minutes < 10 ? "0" + minutes : minutes;
-            document.getElementById("seconds").innerText = seconds < 10 ? "0" + seconds : seconds;
-        }, 1000);
-
-        // --- PREDICTOR LOGIC ---
-        const participants = [
-            "Randy Orton", 
-            "LA Knight", 
-            "Cody Rhodes", 
-            "Je'Von Evans", 
-            "Trick Williams", 
-            "Logan Paul"
-        ];
-
-        function generatePrediction() {
-            const btn = document.getElementById("predictBtn");
-            const resultsContainer = document.getElementById("prediction-results");
-
-            // 1. Lock the UI
-            btn.innerText = "SIMULATING MATCH...";
-            btn.disabled = true;
-            resultsContainer.style.display = "flex";
-            resultsContainer.innerHTML = "";
-
-            // 2. Shuffle the participants array
-            let shuffled = [...participants];
-            for (let i = shuffled.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-            }
-
-            // 3. Randomly select the ultimate winner
-            const winnerIndex = Math.floor(Math.random() * 6);
-            const predictedWinner = shuffled[winnerIndex];
-
-            // 4. Build the HTML structure
-            let htmlContent = `
-                <div class="result-box starters-box" id="reveal-0">
-                    <div class="result-header">The Starters</div>
-                    <div class="wrestler-name">1. ${shuffled[0]}</div>
-                    <div class="wrestler-name">2. ${shuffled[1]}</div>
-                </div>
-            `;
-
-            for(let i = 2; i < 6; i++) {
-                htmlContent += `
-                    <div class="result-box pod-box" id="reveal-${i-1}">
-                        <div class="result-header">Entry #${i+1} (Pod ${i-1})</div>
-                        <div class="wrestler-name">${shuffled[i]}</div>
-                    </div>
-                `;
-            }
-
-            // Add the container for the winner (hidden at first)
-            htmlContent += `
-                <div id="winner-container" class="winner-box">
-                    <div class="winner-header-text">CALCULATING WINNER...</div>
-                </div>
-            `;
-
-            resultsContainer.innerHTML = htmlContent;
-
-            // 5. Execute Cascading Reveal
-            let delay = 500;
-
-            // Reveal Starters
-            setTimeout(() => {
-                document.getElementById('reveal-0').classList.add('visible');
-            }, delay);
-
-            // Reveal Pods sequentially
-            for(let i = 1; i <= 4; i++) {
-                delay += 700;
-                setTimeout(() => {
-                    document.getElementById(`reveal-${i}`).classList.add('visible');
-                }, delay);
-            }
-
-            // Reveal "Calculating" State for Winner
-            delay += 800;
-            setTimeout(() => {
-                const winnerBox = document.getElementById('winner-container');
-                winnerBox.classList.add('calculating');
-                // Scroll down slightly so the winner box is fully in view on mobile
-                winnerBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-            }, delay);
-
-            // Execute Final Winner Reveal Drop
-            delay += 2000; // 2 seconds of suspense
-            setTimeout(() => {
-                const winnerBox = document.getElementById('winner-container');
-                
-                // Swap classes to trigger the stomp animation
-                winnerBox.classList.
+</body>
+</html>
