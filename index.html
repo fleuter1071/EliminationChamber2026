@@ -35,9 +35,7 @@
             0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
                 text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 20px var(--wwe-red-bright), 0 0 40px var(--wwe-red-bright);
             }
-            20%, 24%, 55% {
-                text-shadow: none;
-            }
+            20%, 24%, 55% { text-shadow: none; }
         }
 
         @keyframes heartbeat {
@@ -46,12 +44,6 @@
             30% { transform: scale(1); }
             45% { transform: scale(1.02); }
             100% { transform: scale(1); }
-        }
-
-        @keyframes podFlash {
-            0% { background-color: #333; color: #333; }
-            50% { background-color: var(--wwe-red-bright); color: #fff; box-shadow: var(--neon-glow); }
-            100% { background-color: #333; color: #333; }
         }
 
         header {
@@ -172,14 +164,15 @@
             text-shadow: none;
         }
 
-        /* Pod Generator Section */
+        /* --- PREDICTOR INTERACTIVE SECTION --- */
         .interactive-section {
             text-align: center;
-            background: linear-gradient(145deg, #111, #222);
+            background: linear-gradient(145deg, #111, #1a1a1a);
             padding: 40px 20px;
             border-radius: 12px;
-            border: 2px dashed #555;
+            border: 2px dashed #444;
             margin: 50px 0;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
         }
 
         .interactive-section h3 {
@@ -187,6 +180,14 @@
             color: #fff;
             margin-top: 0;
             text-transform: uppercase;
+            text-shadow: 2px 2px 4px #000;
+        }
+
+        .interactive-section p {
+            font-family: Arial, sans-serif;
+            color: #bbb;
+            margin-bottom: 30px;
+            font-size: 1.1rem;
         }
 
         button {
@@ -206,36 +207,77 @@
 
         button:hover {
             background-color: #ff1a1a;
-            transform: scale(1.05);
+            transform: translateY(-2px);
             box-shadow: var(--neon-glow);
         }
 
         button:active {
-            transform: scale(0.95);
+            transform: scale(0.98);
         }
 
-        #pod-result {
-            margin-top: 30px;
-            font-size: 3rem;
-            font-weight: bold;
-            height: 80px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        button:disabled {
+            background-color: #555;
+            color: #999;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Predictor Results UI */
+        #prediction-results {
+            margin-top: 40px;
+            display: none; /* Hidden until generated */
+            flex-direction: column;
+            gap: 15px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .result-box {
+            padding: 15px 20px;
             border-radius: 8px;
-            transition: all 0.3s;
+            text-align: left;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.4s ease-out, transform 0.4s ease-out;
         }
 
-        .flash-animation {
-            animation: podFlash 0.2s infinite;
+        .result-box.visible {
+            opacity: 1;
+            transform: translateY(0);
         }
 
-        .final-pod {
-            background-color: rgba(255, 51, 51, 0.2);
-            color: var(--wwe-red-bright);
+        .starters-box {
+            background: rgba(255, 51, 51, 0.15);
             border: 2px solid var(--wwe-red-bright);
-            box-shadow: var(--neon-glow);
-            text-shadow: 2px 2px 5px #000;
+            box-shadow: 0 0 15px rgba(255, 51, 51, 0.2);
+        }
+
+        .pod-box {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid #555;
+        }
+
+        .result-header {
+            font-size: 1.2rem;
+            color: #aaa;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .starters-box .result-header {
+            color: var(--wwe-red-bright);
+            font-weight: bold;
+        }
+
+        .wrestler-name {
+            font-size: 1.8rem;
+            color: #fff;
+            font-weight: bold;
+            margin: 5px 0;
+            text-shadow: 1px 1px 2px #000;
         }
 
         /* Grid & Cards */
@@ -300,6 +342,7 @@
             .timer div { padding: 10px; }
             h2 { font-size: 2.4rem; }
             .interactive-section h3 { font-size: 2rem; }
+            .wrestler-name { font-size: 1.4rem; }
         }
     </style>
 </head>
@@ -311,7 +354,7 @@
 
     <nav>
         <a href="#upcoming">2026 Event</a>
-        <a href="#interactive">Enter The Chamber</a>
+        <a href="#interactive">Predictor</a>
         <a href="#structure">The Structure</a>
         <a href="#history">Origins</a>
     </nav>
@@ -359,10 +402,13 @@
         </section>
 
         <section id="interactive" class="interactive-section">
-            <h3>Test Your Luck: Which Pod Are You In?</h3>
-            <p style="font-family: Arial; color: #ccc; margin-bottom: 20px;">Two start in the ring. The other four wait in the pods. Find out when you'll enter the carnage.</p>
-            <button onclick="generatePod()">Assign My Pod</button>
-            <div id="pod-result"></div>
+            <h3>Predict The Carnage: Men's Chamber</h3>
+            <p>Two start the match. Four wait in the pods. Generate your official prediction for the entry order.</p>
+            
+            <button id="predictBtn" onclick="generatePrediction()">Generate Entrance Order</button>
+            
+            <div id="prediction-results">
+                </div>
         </section>
 
         <section id="structure">
@@ -422,7 +468,7 @@
     </footer>
 
     <script>
-        // Use a strict ISO string with the CST offset (-06:00) so it calculates correctly regardless of where the user lives
+        // --- COUNTDOWN TIMER LOGIC ---
         const targetDate = new Date("2026-02-28T17:30:00-06:00").getTime();
 
         const updateCountdown = setInterval(function() {
@@ -446,29 +492,77 @@
             document.getElementById("seconds").innerText = seconds < 10 ? "0" + seconds : seconds;
         }, 1000);
 
-        // Pod Generator Logic
-        function generatePod() {
-            const resultDiv = document.getElementById("pod-result");
-            
-            // Remove previous final state and add flashing animation
-            resultDiv.className = "flash-animation";
-            resultDiv.innerText = "RANDOMIZING...";
+        // --- PREDICTOR LOGIC ---
+        const participants = [
+            "Randy Orton", 
+            "LA Knight", 
+            "Cody Rhodes", 
+            "Je'Von Evans", 
+            "Trick Williams", 
+            "Jey Uso"
+        ];
 
-            // Simulate the delay of the spinning pod lights (2.5 seconds)
+        function generatePrediction() {
+            const btn = document.getElementById("predictBtn");
+            const resultsContainer = document.getElementById("prediction-results");
+
+            // 1. Lock the UI
+            btn.innerText = "RANDOMIZING...";
+            btn.disabled = true;
+            resultsContainer.style.display = "flex";
+            resultsContainer.innerHTML = ""; // Clear previous results
+
+            // 2. Shuffle the participants array using Fisher-Yates algorithm for true randomness
+            let shuffled = [...participants];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+
+            // 3. Build the HTML structure for the results
+            // The Starters (Indexes 0 and 1)
+            let htmlContent = `
+                <div class="result-box starters-box" id="reveal-0">
+                    <div class="result-header">The Starters</div>
+                    <div class="wrestler-name">1. ${shuffled[0]}</div>
+                    <div class="wrestler-name">2. ${shuffled[1]}</div>
+                </div>
+            `;
+
+            // The Pods (Indexes 2 through 5)
+            for(let i = 2; i < 6; i++) {
+                htmlContent += `
+                    <div class="result-box pod-box" id="reveal-${i-1}">
+                        <div class="result-header">Entry #${i+1} (Pod ${i-1})</div>
+                        <div class="wrestler-name">${shuffled[i]}</div>
+                    </div>
+                `;
+            }
+
+            // Inject the HTML
+            resultsContainer.innerHTML = htmlContent;
+
+            // 4. Execute the Cascading Reveal Animation
+            let delay = 500; // Start delay
+
+            // Reveal Starters
             setTimeout(() => {
-                // Pick a random pod number between 1 and 4
-                const podNumber = Math.floor(Math.random() * 4) + 1;
-                
-                // Add ordinal suffix (1st, 2nd, 3rd, 4th)
-                let suffix = "th";
-                if (podNumber === 1) suffix = "st";
-                if (podNumber === 2) suffix = "nd";
-                if (podNumber === 3) suffix = "rd";
+                document.getElementById('reveal-0').classList.add('visible');
+            }, delay);
 
-                // Stop animation, show final result
-                resultDiv.className = "final-pod";
-                resultDiv.innerText = `YOU ARE IN THE ${podNumber}${suffix} POD!`;
-            }, 2500);
+            // Reveal Pods sequentially
+            for(let i = 1; i <= 4; i++) {
+                delay += 700; // Add 0.7 seconds between each reveal
+                setTimeout(() => {
+                    document.getElementById(`reveal-${i}`).classList.add('visible');
+                }, delay);
+            }
+
+            // 5. Re-enable the button after the final animation finishes
+            setTimeout(() => {
+                btn.innerText = "RE-ROLL PREDICTION";
+                btn.disabled = false;
+            }, delay + 500);
         }
     </script>
 </body>
